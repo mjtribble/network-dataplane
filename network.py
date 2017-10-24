@@ -35,6 +35,7 @@ class NetworkPacket:
     # packet encoding lengths
     dst_addr_S_length = 5
 
+    # Extend This!!!
     # @param dst_addr: address of the destination host
     # @param data_S: packet payload
     def __init__(self, dst_addr, data_S):
@@ -71,14 +72,16 @@ class Host:
 
     # called when printing the object
     def __str__(self):
-        return 'Host_%s' % (self.addr)
+        return 'Host_%s' % self.addr
 
+    # Extend
     # create a packet and enqueue for transmission
     # @param dst_addr: destination address for the packet
     # @param data_S: data being transmitted to the network layer
     def udt_send(self, dst_addr, data_S):
-        p = NetworkPacket(dst_addr, data_S)
-        self.out_intf_L[0].put(p.to_byte_S())  # send packets always enqueued successfully
+        # extend
+        packet = NetworkPacket(dst_addr, data_S)
+        self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
         print('%s: sending packet "%s"' % (self, p))
 
     # receive packet from the network layer
@@ -89,20 +92,21 @@ class Host:
 
     # thread target for the host to keep receiving data
     def run(self):
-        print (threading.currentThread().getName() + ': Starting')
+        print(threading.currentThread().getName() + ': Starting')
         while True:
             # receive data arriving to the in interface
             self.udt_receive()
             # terminate
-            if (self.stop):
+            if self.stop:
                 print (threading.currentThread().getName() + ': Ending')
                 return
 
 
 # Implements a multi-interface router described in class
+# We have been using 3 in interfaces and 3 out interfaces
 class Router:
     # @param name: friendly router name for debugging
-    # @param intf_count: the number of input and output interfaces 
+    # @param intf_count: the number of input and output interfaces // should be 3?
     # @param max_queue_size: max queue length (passed to Interface)
     def __init__(self, name, intf_count, max_queue_size):
         self.stop = False  # for thread termination
