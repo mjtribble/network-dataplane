@@ -38,7 +38,7 @@ if __name__ == '__main__':
     link_layer.add_link(link.Link(client, 0, router_a, 0, 50))
 
     # changed this from 50 to 30 via video.
-    link_layer.add_link(link.Link(router_a, 0, server, 0, 30))
+    link_layer.add_link(link.Link(router_a, 0, server, 0, 50))
 
     # start all the objects
     thread_L = [threading.Thread(name=client.__str__(), target=client.run),
@@ -49,11 +49,26 @@ if __name__ == '__main__':
     for t in thread_L:
         t.start()
 
-    # create some send events
-    for i in range(3):
-        client.udt_send(2, 'Sample data %d' % i)  # client(host 1) sending to server(host 2)
+    # create a string 70 chars long to send, 5 chars are added to the begining number
+    testString = ''
+    first = ''
+    second = ''
 
-    # give the network sufficient time to transfer all packets before quitting
+    for i in range(70):
+        testString += '~'
+
+    if len(testString) >= 70:
+        first = testString[0:35]
+        second = testString[35:70]
+
+    # create some send events
+    client.udt_send(2, first)
+    client.udt_send(2, second)
+
+    # for i in range(3):
+    #     client.udt_send(2, 'Hello %d' % i)  # client(host 1) sending to server(host 2)
+
+    # # give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
 
     # join all threads

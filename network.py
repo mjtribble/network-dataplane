@@ -82,7 +82,7 @@ class Host:
         # extend
         packet = NetworkPacket(dst_addr, data_S)
         self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
-        print('%s: sending packet "%s"' % (self, p))
+        print('%s: sending packet "%s"' % (self, packet))
 
     # receive packet from the network layer
     def udt_receive(self):
