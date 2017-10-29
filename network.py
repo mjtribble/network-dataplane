@@ -29,13 +29,12 @@ class Interface:
 
 # Implements a network layer packet (different from the RDT packet
 # from programming assignment 2).
-# NOTE: This class will need to be extended to for the packet to include
-# the fields necessary for the completion of this assignment.
 class NetworkPacket:
     # packet encoding lengths
     dst_addr_S_length = 5
 
-    # Extend This!!!
+    # TODO: #2 Extend this, implement segmentation
+    # TODO: #3 Extend this so that a router can differentiate between host 1 and host 2, and forward appropriately
     # @param dst_addr: address of the destination host
     # @param data_S: packet payload
     def __init__(self, dst_addr, data_S):
@@ -85,6 +84,7 @@ class Host:
         print('%s: sending packet "%s"' % (self, p))
 
     # receive packet from the network layer
+    # TODO: #2 Need to put segmented packets back together here!
     def udt_receive(self):
         pkt_S = self.in_intf_L[0].get()
         if pkt_S is not None:
@@ -108,6 +108,7 @@ class Router:
     # @param name: friendly router name for debugging
     # @param intf_count: the number of input and output interfaces // should be 3?
     # @param max_queue_size: max queue length (passed to Interface)
+    # TODO: #3 add a routing table to each router
     def __init__(self, name, intf_count, max_queue_size):
         self.stop = False  # for thread termination
         self.name = name
@@ -121,6 +122,8 @@ class Router:
 
     # look through the content of incoming interfaces and forward to
     # appropriate outgoing interfaces
+    # TODO: #3 implement Router forwarding table for new topology and pass into the Router Constructor
+
     def forward(self):
         for i in range(len(self.in_intf_L)):
             pkt_S = None
