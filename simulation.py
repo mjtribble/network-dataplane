@@ -54,12 +54,13 @@ if __name__ == '__main__':
     first = ''
     second = ''
 
-    for i in range(70):
+    for i in range(80):
         testString += '~'
 
-    if len(testString) >= 70:
-        first = testString[0:35]
-        second = testString[35:70]
+    if len(testString) >= 80:
+        first = testString[0:40]
+        second = testString[40:70]
+    print (len(first))
 
     # create some send events
     client.udt_send(2, first)
