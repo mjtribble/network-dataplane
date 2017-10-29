@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
     # create network nodes
     # add hosts to list
+    # TODO: #3 Add more hosts and links ( Host1, Host2, Host3(server), RouterA, RouterB, RouterC, RouterD )
     client = network.Host(1)
     object_L.append(client)
     server = network.Host(2)
@@ -37,10 +38,13 @@ if __name__ == '__main__':
     # add all the links to the LinkLayer
     link_layer.add_link(link.Link(client, 0, router_a, 0, 50))
 
-    # changed this from 50 to 30 via video.
+    # changed this from 50 to 30 via video first packet will no longer fit into second layer.
+    # SEE packet segmentation in book and slides
+    # extend network packet class to implement this
     link_layer.add_link(link.Link(router_a, 0, server, 0, 30))
 
     # start all the objects
+    # TODO: #3 Start new object threads
     thread_L = [threading.Thread(name=client.__str__(), target=client.run),
                 threading.Thread(name=server.__str__(), target=server.run),
                 threading.Thread(name=router_a.__str__(), target=router_a.run),
@@ -50,6 +54,7 @@ if __name__ == '__main__':
         t.start()
 
     # create some send events
+    # TODO: #1 Create message at least 80 characters long and break it up into two packets
     for i in range(3):
         client.udt_send(2, 'Sample data %d' % i)  # client(host 1) sending to server(host 2)
 
