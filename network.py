@@ -12,6 +12,7 @@ class Interface:
     # @param maxsize - the maximum size of the queue storing packets
     def __init__(self, maxsize=0):
         self.queue = queue.Queue(maxsize);
+        self.mtu = None
 
     # get packet from the queue interface
     def get(self):
@@ -60,7 +61,6 @@ class NetworkPacket:
         data_S = byte_S[NetworkPacket.dst_addr_S_length:]
         return self(dst_addr, data_S)
 
-
 # Implements a network host for receiving and transmitting data
 class Host:
     # @param addr: address of this node represented as an integer
@@ -82,7 +82,7 @@ class Host:
         # extend
         packet = NetworkPacket(dst_addr, data_S)
         self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
-        print('%s: sending packet "%s"' % (self, packet))
+        print('%s: sending packet "%s" out interface with mtu=%d' % (self, packet, self.out_intf_L[0].mtu))
 
     # receive packet from the network layer
     def udt_receive(self):
@@ -136,7 +136,8 @@ class Router:
                     self.out_intf_L[i].put(p.to_byte_S(), True)
                     print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, i))
             except queue.Full:
-                print('%s: packet "%s" lost on interface %d' % (self, p, i))
+                print('%s: packet "%s" lost on interface %d to %d with mtu %d'
+                      % (self, p, i, i, self.out_intf_L[i].mtu))
                 pass
 
     # thread target for the host to keep forwarding data
