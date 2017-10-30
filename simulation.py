@@ -36,8 +36,12 @@ if __name__ == '__main__':
     object_L.append(link_layer)
 
     # add all the links to the LinkLayer
+    # specify the mtu at the end.
     link_layer.add_link(link.Link(client1, 0, router_a, 0, 50))
     link_layer.add_link(link.Link(router_a, 0, server1, 0, 30))
+
+    # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
+    min_mtu = 30  
 
     # start all the objects
     # TODO: #3 Start new object threads
@@ -62,7 +66,7 @@ if __name__ == '__main__':
     source = 1
     destination = 2
     pkt_id = 1  # this will increment with each packet from the same source
-    client1.udt_send(destination, source, pkt_id, data, 30)
+    client1.udt_send(destination, source, pkt_id, data, min_mtu)
 
     # give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
