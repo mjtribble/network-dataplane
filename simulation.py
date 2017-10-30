@@ -41,7 +41,7 @@ if __name__ == '__main__':
     link_layer.add_link(link.Link(router_a, 0, server1, 0, 30))
 
     # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
-    min_mtu = 30  
+    min_mtu = 30
 
     # start all the objects
     # TODO: #3 Start new object threads

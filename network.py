@@ -5,7 +5,6 @@ Created on Oct 12, 2016
 """
 import queue
 import threading
-import link
 
 
 # wrapper class for a queue of packets
@@ -81,7 +80,6 @@ class NetworkPacket:
 
     # extract a packet object from a byte string
     # @param byte_S: byte string representation of the packet
-
     @classmethod
     def from_byte_S(self, byte_S):
         # length, pkt_id, flag, offset, dest_addr, source_addr, data_S,
@@ -104,7 +102,8 @@ class NetworkPacket:
         source_addr = int(byte_S[0: NetworkPacket.source_addr_S_length])
         byte_S = byte_S[NetworkPacket.source_addr_S_length:]
 
-        data_S = byte_S[NetworkPacket.dest_addr_S_length:]
+        data_S = byte_S
+
         # length, pkt_id, flag, offset, dest_addr, source_addr, data_S,
         return self(length, pkt_id, flag, offset, dest_addr, source_addr, data_S)
 
