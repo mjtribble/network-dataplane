@@ -31,15 +31,35 @@ class Interface:
 # Implements a network layer packet (different from the RDT packet
 # from programming assignment 2).
 class NetworkPacket:
-    # packet encoding lengths
-    dst_addr_S_length = 5
+    # packet header encoding lengths
+    length_S_length = 5
+    pkt_id_S_length = 2
+    flag_S_length = 2
+    offset_S_length = 5
+    dest_addr_S_length = 3
+    source_addr_S_length = 3
+
+    header_length = dest_addr_S_length \
+                    + source_addr_S_length \
+                    + pkt_id_S_length \
+                    + flag_S_length \
+                    + offset_S_length \
+                    + length_S_length
 
     # TODO: #2 Extend this, implement segmentation
     # TODO: #3 Extend this so that a router can differentiate between host 1 and host 2, and forward appropriately
-    # @param dst_addr: address of the destination host
+    # @param dest_addr: address of the destination host
+    # @param length: payload's length
+    # @param id: packet's id
+    # @param flag: packet payload
     # @param data_S: packet payload
-    def __init__(self, dst_addr, data_S):
-        self.dst_addr = dst_addr
+    def __init__(self, length, pkt_id, flag, offset, dest_addr, source_addr, data_S, ):
+        self.length = length
+        self.pkt_id = pkt_id
+        self.flag = flag
+        self.offset = offset
+        self.dest_addr = dest_addr
+        self.source_addr = source_addr
         self.data_S = data_S
 
     # called when printing the object
@@ -47,8 +67,14 @@ class NetworkPacket:
         return self.to_byte_S()
 
     # convert packet to a byte string for transmission over links
+    # length, pkt_id, flag, offset, dest_addr, source_addr, data_S,
     def to_byte_S(self):
-        byte_S = str(self.dst_addr).zfill(self.dst_addr_S_length)
+        byte_S = str(self.length).zfill(self.length_S_length)
+        byte_S += str(self.pkt_id).zfill(self.pkt_id_S_length)
+        byte_S += str(self.flag).zfill(self.flag_S_length)
+        byte_S += str(self.offset).zfill(self.offset_S_length)
+        byte_S += str(self.dest_addr).zfill(self.dest_addr_S_length)
+        byte_S += str(self.source_addr).zfill(self.source_addr_S_length)
         byte_S += self.data_S
         return byte_S
 
@@ -56,9 +82,31 @@ class NetworkPacket:
     # @param byte_S: byte string representation of the packet
     @classmethod
     def from_byte_S(self, byte_S):
-        dst_addr = int(byte_S[0: NetworkPacket.dst_addr_S_length])
-        data_S = byte_S[NetworkPacket.dst_addr_S_length:]
-        return self(dst_addr, data_S)
+        # length, pkt_id, flag, offset, dest_addr, source_addr, data_S,
+
+        length = int(byte_S[0: NetworkPacket.length_S_length])
+        byte_S = byte_S[NetworkPacket.length_S_length:]
+
+        pkt_id = int(byte_S[0: NetworkPacket.pkt_id_S_length])
+        byte_S = byte_S[NetworkPacket.pkt_id_S_length:]
+
+        flag = int(byte_S[0: NetworkPacket.flag_S_length])
+        byte_S = byte_S[NetworkPacket.flag_S_length:]
+
+        offset = int(byte_S[0: NetworkPacket.offset_S_length])
+        byte_S = byte_S[NetworkPacket.offset_S_length:]
+
+        dest_addr = int(byte_S[0: NetworkPacket.dest_addr_S_length])
+        byte_S = byte_S[NetworkPacket.dest_addr_S_length:]
+
+        source_addr = int(byte_S[0: NetworkPacket.source_addr_S_length])
+        byte_S = byte_S[NetworkPacket.source_addr_S_length:]
+
+        data_S = byte_S
+
+        # length, pkt_id, flag, offset, dest_addr, source_addr, data_S,
+        return self(length, pkt_id, flag, offset, dest_addr, source_addr, data_S)
+
 
 # Implements a network host for receiving and transmitting data
 class Host:
@@ -73,15 +121,41 @@ class Host:
     def __str__(self):
         return 'Host_%s' % self.addr
 
-    # Extend
+    # This implements fragmentation of a packet
     # create a packet and enqueue for transmission
-    # @param dst_addr: destination address for the packet
+    # @param dest_addr: destination address for the packet
+    # @param source_addr: destination address for the packet
     # @param data_S: data being transmitted to the network layer
-    def udt_send(self, dst_addr, data_S):
-        # extend
-        packet = NetworkPacket(dst_addr, data_S)
-        self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
-        print('%s: sending packet "%s" out interface with mtu=%d' % (self, packet, self.out_intf_L[0].mtu))
+    def udt_send(self, dest_addr, source_addr, pkt_id, data_S, min_mtu):
+
+        total_frag_size = min_mtu
+        data_frag_size = total_frag_size - NetworkPacket.header_length
+        pkt_data_length = len(data_S)
+        temp_pkt_length = pkt_data_length
+        offset = 0  # the offset is disregards the header length. Only finds the data
+
+        while temp_pkt_length > data_frag_size:  # packet is too large, split it up
+            flag = 1
+            packet = NetworkPacket(total_frag_size, pkt_id, flag, offset, dest_addr, source_addr, data_S[:data_frag_size])
+            self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
+            print('%s: sending packet "%s" with id %d, and offset %d, out interface with mtu=%d'
+                  % (self, packet, pkt_id, offset, min_mtu))
+            data_S = data_S[data_frag_size:]  # remaining data to be sent
+            temp_pkt_length = len(data_S)  # sets the new length
+
+            # buggy!!! may need tweeking when putting packets back together
+            if temp_pkt_length <= data_frag_size:
+                offset += temp_pkt_length
+            else:
+                offset += total_frag_size - NetworkPacket.header_length
+
+        if temp_pkt_length <= data_frag_size:  # packet is the correct size
+            flag = 0  # this is the only / last packet
+            packet_size = temp_pkt_length + NetworkPacket.header_length
+            packet = NetworkPacket(packet_size, pkt_id, flag, offset, dest_addr, source_addr, data_S)
+            self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
+            print('%s: sending packet "%s" with id %d, and offset %d, out interface with mtu=%d'
+                  % (self, packet, pkt_id, offset, min_mtu))
 
     # receive packet from the network layer
     # TODO: #2 Need to put segmented packets back together here!
@@ -98,7 +172,7 @@ class Host:
             self.udt_receive()
             # terminate
             if self.stop:
-                print (threading.currentThread().getName() + ': Ending')
+                print(threading.currentThread().getName() + ': Ending')
                 return
 
 
