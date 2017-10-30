@@ -110,6 +110,8 @@ class NetworkPacket:
 
 # Implements a network host for receiving and transmitting data
 class Host:
+    global receiveList 
+    receiveList = []
     # @param addr: address of this node represented as an integer
     def __init__(self, addr):
         self.addr = addr
@@ -159,12 +161,25 @@ class Host:
 
     # receive packet from the network layer
     # TODO: #2 Need to put segmented packets back together here!
+
+
     def udt_receive(self):
         pkt_S = self.in_intf_L[0].get()
+
         if pkt_S is not None:
-            print('%s: received packet "%s"' % (self, pkt_S))
+            # print('%s: received packet "%s"' % (self, pkt_S))
+            packetFlag = pkt_S[8:9]  
+            receiveList.append(pkt_S)
+            #checks the flag of pkt_S if 0 all data has been sent else, keep receiving 
+            if packetFlag == '0':
+                result = ''
+                for i in range(len(receiveList)):
+                    data = receiveList[i]
+                    result += data[20:]
+                print (result)
 
     # thread target for the host to keep receiving data
+   
     def run(self):
         print(threading.currentThread().getName() + ': Starting')
         while True:
