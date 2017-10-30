@@ -168,14 +168,16 @@ class Host:
 
         if pkt_S is not None:
             # print('%s: received packet "%s"' % (self, pkt_S))
-            packetFlag = pkt_S[8:9]  
+            packet = NetworkPacket.from_byte_S(pkt_S)
             receiveList.append(pkt_S)
             #checks the flag of pkt_S if 0 all data has been sent else, keep receiving 
-            if packetFlag == '0':
+            if packet.flag == 0:
                 result = ''
+
                 for i in range(len(receiveList)):
                     data = receiveList[i]
-                    result += data[20:]
+                    packet = NetworkPacket.from_byte_S(data)
+                    result += packet.data_S 
                 print (result)
 
     # thread target for the host to keep receiving data
