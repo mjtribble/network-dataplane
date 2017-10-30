@@ -37,10 +37,6 @@ if __name__ == '__main__':
 
     # add all the links to the LinkLayer
     link_layer.add_link(link.Link(client1, 0, router_a, 0, 50))
-
-    # changed this from 50 to 30 via video first packet will no longer fit into second layer.
-    # SEE packet segmentation in book and slides
-    # extend network packet class to implement this
     link_layer.add_link(link.Link(router_a, 0, server1, 0, 30))
 
     # start all the objects
@@ -66,7 +62,7 @@ if __name__ == '__main__':
     source = 1
     destination = 2
     pkt_id = 1  # this will increment with each packet from the same source
-    client1.udt_send(destination, source, pkt_id, data)
+    client1.udt_send(destination, source, pkt_id, data, 30)
 
     # give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)

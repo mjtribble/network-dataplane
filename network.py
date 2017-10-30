@@ -5,6 +5,7 @@ Created on Oct 12, 2016
 """
 import queue
 import threading
+import link
 
 
 # wrapper class for a queue of packets
@@ -121,14 +122,14 @@ class Host:
     def __str__(self):
         return 'Host_%s' % self.addr
 
-    # Extend
+    # This implements fragmentation of a packet
     # create a packet and enqueue for transmission
     # @param dest_addr: destination address for the packet
     # @param source_addr: destination address for the packet
     # @param data_S: data being transmitted to the network layer
-    def udt_send(self, dest_addr, source_addr, pkt_id, data_S):
+    def udt_send(self, dest_addr, source_addr, pkt_id, data_S, min_mtu):
 
-        total_frag_size = self.out_intf_L[0].mtu
+        total_frag_size = min_mtu
         data_frag_size = total_frag_size - NetworkPacket.header_length
         pkt_data_length = len(data_S)
         temp_pkt_length = pkt_data_length
@@ -139,7 +140,7 @@ class Host:
             packet = NetworkPacket(total_frag_size, pkt_id, flag, offset, dest_addr, source_addr, data_S[:data_frag_size])
             self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
             print('%s: sending packet "%s" with id %d, and offset %d, out interface with mtu=%d'
-                  % (self, packet, pkt_id, offset, self.out_intf_L[0].mtu))
+                  % (self, packet, pkt_id, offset, min_mtu))
             data_S = data_S[data_frag_size:]  # remaining data to be sent
             temp_pkt_length = len(data_S)  # sets the new length
 
@@ -155,7 +156,7 @@ class Host:
             packet = NetworkPacket(packet_size, pkt_id, flag, offset, dest_addr, source_addr, data_S)
             self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
             print('%s: sending packet "%s" with id %d, and offset %d, out interface with mtu=%d'
-                  % (self, packet, pkt_id, offset, self.out_intf_L[0].mtu))
+                  % (self, packet, pkt_id, offset, min_mtu))
 
     # receive packet from the network layer
     # TODO: #2 Need to put segmented packets back together here!
