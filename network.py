@@ -167,18 +167,25 @@ class Host:
         pkt_S = self.in_intf_L[0].get()
 
         if pkt_S is not None:
-            # print('%s: received packet "%s"' % (self, pkt_S))
             packet = NetworkPacket.from_byte_S(pkt_S)
             receiveList.append(pkt_S)
             #checks the flag of pkt_S if 0 all data has been sent else, keep receiving 
             if packet.flag == 0:
                 result = ''
-
+                result2 = ''
+                #sorts list based on the headers, last element goes to the from of the list due to flag = 0, therefore we pop and append it to the end of the list to get it in order
+                #may need to change this for part 3
+                receiveList.sort()
+                receiveList.append(receiveList.pop(0))
                 for i in range(len(receiveList)):
                     data = receiveList[i]
                     packet = NetworkPacket.from_byte_S(data)
                     result += packet.data_S 
-                print (result)
+                    result2 += data
+                print('%s: received packet "%s"' % (self, result2))
+                print('%s: parsed packet "%s"' % (self, result))
+                # print ('Host Received: ' + result2 + '\n\n' + 'Final Data Received: ' + result)
+
 
     # thread target for the host to keep receiving data
    
