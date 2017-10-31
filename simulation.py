@@ -56,7 +56,7 @@ if __name__ == '__main__':
         # create a string 70 chars long to send, 5 chars are added to the begining number
     data = ''
 
-    for i in range(65, 145):
+    for i in range(43, 123):
         data += chr(i)
 
     print(data)
