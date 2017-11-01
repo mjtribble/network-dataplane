@@ -4,8 +4,8 @@ Created on Oct 12, 2016
 @author: mwitt_000
 """
 
-import network = network_2
-import link
+import network_2
+import link_2
 import threading
 from time import sleep
 
@@ -21,24 +21,24 @@ if __name__ == '__main__':
     # create network nodes
     # add hosts to list
     # TODO: #3 Add more hosts and links ( Host1, Host2, Host3(server), RouterA, RouterB, RouterC, RouterD )
-    client1 = network.Host(1)
+    client1 = network_2.Host(1)
     object_L.append(client1)
-    server1 = network.Host(2)
+    server1 = network_2.Host(2)
     object_L.append(server1)
 
     # add routers to list
-    router_a = network.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
+    router_a = network_2.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
     object_L.append(router_a)
 
     # create a Link Layer to keep track of links between network nodes
     # add LinkLayer to list
-    link_layer = link.LinkLayer()
+    link_layer = link_2.LinkLayer()
     object_L.append(link_layer)
 
     # add all the links to the LinkLayer
     # specify the mtu at the end.
-    link_layer.add_link(link.Link(client1, 0, router_a, 0, 50))
-    link_layer.add_link(link.Link(router_a, 0, server1, 0, 30))
+    link_layer.add_link(link_2.Link(client1, 0, router_a, 0, 50))
+    link_layer.add_link(link_2.Link(router_a, 0, server1, 0, 30))
 
     # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
     min_mtu = 30
@@ -58,8 +58,6 @@ if __name__ == '__main__':
 
     for i in range(43, 123):
         data += chr(i)
-
-    print(data)
 
     # send message -> destination, source, data
     # client(host 1) sending to server(host 2)

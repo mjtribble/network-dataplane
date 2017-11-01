@@ -32,12 +32,12 @@ class Interface:
 # from programming assignment 2).
 class NetworkPacket:
     # packet header encoding lengths
-    length_S_length = 5
+    length_S_length = 2
     pkt_id_S_length = 2
     flag_S_length = 2
-    offset_S_length = 5
-    dest_addr_S_length = 3
-    source_addr_S_length = 3
+    offset_S_length = 2
+    dest_addr_S_length = 2
+    source_addr_S_length = 2
 
     header_length = dest_addr_S_length \
                     + source_addr_S_length \
