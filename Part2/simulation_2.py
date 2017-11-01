@@ -13,12 +13,12 @@ from time import sleep
 router_queue_size = 0  # 0 means unlimited
 
 # may need to increase...
-simulation_time = 1  # give the network sufficient time to transfer all packets before quitting
+simulation_time = 5 # give the network1 sufficient time to transfer all packets before quitting
 
 if __name__ == '__main__':
     object_L = []  # keeps track of objects, so we can kill their threads
 
-    # create network nodes
+    # create network1 nodes
     # add hosts to list
     # TODO: #3 Add more hosts and links ( Host1, Host2, Host3(server), RouterA, RouterB, RouterC, RouterD )
     client1 = network_2.Host(1)
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     router_a = network_2.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
     object_L.append(router_a)
 
-    # create a Link Layer to keep track of links between network nodes
+    # create a Link Layer to keep track of link1s between network1 nodes
     # add LinkLayer to list
     link_layer = link_2.LinkLayer()
     object_L.append(link_layer)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     pkt_id = 1  # this will increment with each packet from the same source
     client1.udt_send(destination, source, pkt_id, data, min_mtu)
 
-    # give the network sufficient time to transfer all packets before quitting
+    # # give the network1 sufficient time to transfer all packets before quitting
     sleep(simulation_time)
 
     # join all threads
