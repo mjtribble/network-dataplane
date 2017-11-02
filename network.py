@@ -238,7 +238,7 @@ class Router:
                     # forwarding table to find the appropriate outgoing interface
                     # for now we assume the outgoing interface is also i
                     self.out_intf_L[i].put(p.to_byte_S(), True)
-                    print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, 1))
+                    print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, i+1))
             except queue.Full:
                 print('%s: packet "%s" lost on interface %d to %d with mtu %d'
                       % (self, p, i, i, self.out_intf_L[i].mtu))

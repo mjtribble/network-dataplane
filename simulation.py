@@ -33,10 +33,10 @@ if __name__ == '__main__':
     object_L.append(server2)
 
     # add routers to list
-    router_a = network.Router(name='A', intf_count=5, max_queue_size=router_queue_size)
-    router_b = network.Router(name='B', intf_count=5, max_queue_size=router_queue_size)
-    router_c = network.Router(name='C', intf_count=5, max_queue_size=router_queue_size)
-    router_d = network.Router(name='D', intf_count=5, max_queue_size=router_queue_size)
+    router_a = network.Router(name='A', intf_count=4, max_queue_size=router_queue_size)
+    router_b = network.Router(name='B', intf_count=4, max_queue_size=router_queue_size)
+    router_c = network.Router(name='C', intf_count=4, max_queue_size=router_queue_size)
+    router_d = network.Router(name='D', intf_count=4, max_queue_size=router_queue_size)
     object_L.append(router_a)
     object_L.append(router_b)
     object_L.append(router_c)
@@ -50,10 +50,10 @@ if __name__ == '__main__':
     # add all the links to the LinkLayer
     # specify the mtu at the end.
     #second and fourth element pertains to the interface, changing them to work with routing table
-    # link_layer.add_link(link.Link(client1, 0, router_a, 0, 50))     #from client 1 and two on interface 0, forward to router a
-    # link_layer.add_link(link.Link(router_a, 0, router_b, 0, 30))
-    # link_layer.add_link(link.Link(router_b, 0, router_d, 0, 30))
-    # link_layer.add_link(link.Link(router_d, 0, client2, 0, 30))
+    # link_layer.add_link(link.Link(client1, 0, router_a, 1, 50))     #from client 1 and two on interface 0, forward to router a
+    # link_layer.add_link(link.Link(router_a, 1, router_b, 2, 30))
+    # link_layer.add_link(link.Link(router_b, 2, router_d, 3, 30))
+    # link_layer.add_link(link.Link(router_d, 3, client2, 0, 30))
 
     link_layer.add_link(link.Link(server1, 0, router_a, 1, 50))
     link_layer.add_link(link.Link(router_a, 1, router_c, 2, 30))
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # send message -> destination, source, data
     # client(host 1) sending to server(host 2)
     source = 1
-    destination = 2
+    destination = 3
     pkt_id = 1  # this will increment with each packet from the same source
     server1.udt_send(destination, source, pkt_id, data, min_mtu)
 
