@@ -231,11 +231,14 @@ class Router:
                 # if packet exists make a forwarding decision
                 if pkt_S is not None:
                     p = NetworkPacket.from_byte_S(pkt_S)  # parse a packet out
+                    # if p.dest_addr==3 and p.source_addr==1:
+                    #     #send through A->B->D->Host3
+                    # elif p.dest_addr==2 and p.source_addr==4:
                     # HERE you will need to implement a lookup into the 
                     # forwarding table to find the appropriate outgoing interface
                     # for now we assume the outgoing interface is also i
                     self.out_intf_L[i].put(p.to_byte_S(), True)
-                    print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, i))
+                    print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, 1))
             except queue.Full:
                 print('%s: packet "%s" lost on interface %d to %d with mtu %d'
                       % (self, p, i, i, self.out_intf_L[i].mtu))
