@@ -4,8 +4,8 @@ Created on Oct 12, 2016
 @author: mwitt_000
 """
 
-import network
-import link
+import network_3
+import link_3
 import threading
 from time import sleep
 
@@ -20,23 +20,23 @@ if __name__ == '__main__':
 
     # create network nodes
     # add hosts to list
-    # TODO: #3 Add more hosts and links ( Host1, Host2, Host3(server), RouterA, RouterB, RouterC, RouterD )
-    client1 = network.Host(1)
-    object_L.append(client1)
-    server1 = network.Host(2)
-    object_L.append(server1)
+    # TODO: #3 Add more hosts and links ( host_1, Host2, host_3(server), RouterA, RouterB, RouterC, RouterD )
+    host_1 = network_3.Host(1)
+    object_L.append(host_1)
+    host_2 = network_3.Host(2)
+    object_L.append(host_2)
 
-    #adding another server
-    client2 = network.Host(3)
-    server2 = network.Host(4)
-    object_L.append(client2)
-    object_L.append(server2)
+    # adding another server
+    host_3 = network_3.Host(3)
+    host_4 = network_3.Host(4)
+    object_L.append(host_3)
+    object_L.append(host_4)
 
     # add routers to list
-    router_a = network.Router(name='A', intf_count=4, max_queue_size=router_queue_size)
-    router_b = network.Router(name='B', intf_count=4, max_queue_size=router_queue_size)
-    router_c = network.Router(name='C', intf_count=4, max_queue_size=router_queue_size)
-    router_d = network.Router(name='D', intf_count=4, max_queue_size=router_queue_size)
+    router_a = network_3.Router(name='A', intf_count=4, max_queue_size=router_queue_size)
+    router_b = network_3.Router(name='B', intf_count=4, max_queue_size=router_queue_size)
+    router_c = network_3.Router(name='C', intf_count=4, max_queue_size=router_queue_size)
+    router_d = network_3.Router(name='D', intf_count=4, max_queue_size=router_queue_size)
     object_L.append(router_a)
     object_L.append(router_b)
     object_L.append(router_c)
@@ -44,31 +44,31 @@ if __name__ == '__main__':
 
     # create a Link Layer to keep track of links between network nodes
     # add LinkLayer to list
-    link_layer = link.LinkLayer()
+    link_layer = link_3.LinkLayer()
     object_L.append(link_layer)
 
     # add all the links to the LinkLayer
     # specify the mtu at the end.
     #second and fourth element pertains to the interface, changing them to work with routing table
-    # link_layer.add_link(link.Link(client1, 0, router_a, 1, 50))     #from client 1 and two on interface 0, forward to router a
+    # link_layer.add_link(link.Link(host_1, 0, router_a, 1, 50))     #from client 1 and two on interface 0, forward to router a
     # link_layer.add_link(link.Link(router_a, 1, router_b, 2, 30))
     # link_layer.add_link(link.Link(router_b, 2, router_d, 3, 30))
-    # link_layer.add_link(link.Link(router_d, 3, client2, 0, 30))
+    # link_layer.add_link(link.Link(router_d, 3, host_3, 0, 30))
 
-    link_layer.add_link(link.Link(server1, 0, router_a, 1, 50))
-    link_layer.add_link(link.Link(router_a, 1, router_c, 2, 30))
-    link_layer.add_link(link.Link(router_c, 2, router_d, 3, 30))
-    link_layer.add_link(link.Link(router_d, 3, server2, 0, 30))
+    link_layer.add_link(link_3.Link(host_2, 0, router_a, 1, 50))
+    link_layer.add_link(link_3.Link(router_a, 1, router_c, 2, 30))
+    link_layer.add_link(link_3.Link(router_c, 2, router_d, 3, 30))
+    link_layer.add_link(link_3.Link(router_d, 3, host_4, 0, 30))
 
     # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
     min_mtu = 30
 
     # start all the objects
     # TODO: #3 Start new object threads
-    thread_L = [threading.Thread(name=client1.__str__(), target=client1.run),
-                threading.Thread(name=server1.__str__(), target=server1.run),
-                threading.Thread(name=client2.__str__(), target=client2.run),
-                threading.Thread(name=server2.__str__(), target=server2.run),
+    thread_L = [threading.Thread(name=host_1.__str__(), target=host_1.run),
+                threading.Thread(name=host_2.__str__(), target=host_2.run),
+                threading.Thread(name=host_3.__str__(), target=host_3.run),
+                threading.Thread(name=host_4.__str__(), target=host_4.run),
                 threading.Thread(name=router_a.__str__(), target=router_a.run),
                 threading.Thread(name=router_b.__str__(), target=router_b.run),
                 threading.Thread(name=router_c.__str__(), target=router_c.run),
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     source = 1
     destination = 3
     pkt_id = 1  # this will increment with each packet from the same source
-    server1.udt_send(destination, source, pkt_id, data, min_mtu)
+    host_2.udt_send(destination, source, pkt_id, data, min_mtu)
 
     # give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
