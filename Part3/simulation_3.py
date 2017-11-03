@@ -49,16 +49,28 @@ if __name__ == '__main__':
 
     # add all the links to the LinkLayer
     # specify the mtu at the end.
-    #second and fourth element pertains to the interface, changing them to work with routing table
-    link_layer.add_link(link_3.Link(host_1, 0, router_a, 0, 50))     #from client 1 and two on interface 0, forward to router a
-    link_layer.add_link(link_3.Link(router_a, 0, router_b, 0, 30))
-    link_layer.add_link(link_3.Link(router_b, 0, router_d, 0, 30))
-    link_layer.add_link(link_3.Link(router_d, 0, host_3, 0, 30))
+    # second and fourth element pertains to the interface, changing them to work with routing table
+    # second = from interface, fourth = to interface
+    # HOST 1 links
+    link_layer.add_link(link_3.Link(host_1, 0, router_a, 1, 50))
 
+    # HOST 2 links
     link_layer.add_link(link_3.Link(host_2, 0, router_a, 1, 50))
-    link_layer.add_link(link_3.Link(router_a, 1, router_c, 0, 30))
+
+    # ROUTER A links
+    link_layer.add_link(link_3.Link(router_a, 0, router_b, 2, 30))
+    link_layer.add_link(link_3.Link(router_a, 0, router_b, 3, 30))
+    link_layer.add_link(link_3.Link(router_a, 1, router_b, 2, 30))
+    link_layer.add_link(link_3.Link(router_a, 1, router_b, 3, 30))
+
+    # ROUTER B links
+    link_layer.add_link(link_3.Link(router_b, 0, router_d, 1, 30))
+
+    # ROUTER C links
     link_layer.add_link(link_3.Link(router_c, 0, router_d, 1, 30))
-    link_layer.add_link(link_3.Link(router_d, 1, host_4, 0, 30))
+
+    # ROUTER D links
+    link_layer.add_link(link_3.Link(router_d, 0, host_4, 1, 30))
 
     # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
     min_mtu = 30
