@@ -193,14 +193,14 @@ class Host:
                 for i in range(len(receiveList_1)):
                     data = receiveList_1[i]
                     packet = NetworkPacket.from_byte_S(data)
-                    raw_result_1 += packet.data_S
-                    result1 += data
+                    result1 += packet.data_S
+                    raw_result_1 += data
 
                 for j in range(len(receiveList_2)):
                     data = receiveList_2[j]
                     packet = NetworkPacket.from_byte_S(data)
-                    raw_result_2 += packet.data_S
-                    result2 += data
+                    result2 += packet.data_S
+                    raw_result_2 += data
 
                 print('%s: received packets "%s"' % (self, raw_result_2))
 
