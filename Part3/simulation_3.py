@@ -31,17 +31,19 @@ if __name__ == '__main__':
     object_L.append(host_4)
 
     # create routing tables
-    # [origin, destination, out_interface]
-    table_a = ([1, 3, 1], [2, 3, 0])
-    table_b = ([1, 3, 0])
-    table_c = [[2, 3, 0]]
-    table_d = ([1, 3, 0], [2, 3, 0])
+    # [h1_dest, h1_out], [h2_dest, h2_out]
+    table_a = ([3, 1], [3, 0])
+    table_b = ([3, 0], [])
+    table_c = ([], [3, 0])
+    table_d = ([3, 0], [3, 0])
 
-    # add routers to list
+    # create routers
     router_a = network_3.Router(name='A', intf_count=2, max_queue_size=router_queue_size, routing_table=table_a)
     router_b = network_3.Router(name='B', intf_count=1, max_queue_size=router_queue_size, routing_table=table_b)
     router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size, routing_table=table_c)
-    router_d = network_3.Router(name='D', intf_count=1, max_queue_size=router_queue_size)
+    router_d = network_3.Router(name='D', intf_count=1, max_queue_size=router_queue_size, routing_table=table_d)
+
+    # add routers to list
     object_L.append(router_a)
     object_L.append(router_b)
     object_L.append(router_c)
@@ -102,11 +104,12 @@ if __name__ == '__main__':
     print('Initial Data: ' + data)
 
     # send message -> destination, source, data
-    # client(host 1) sending to server(host 2)
-    source = 2
-    destination = 4
+    # client(host 1) sending to server(host 3)
+
     pkt_id = 1  # this will increment with each packet from the same source
-    host_1.udt_send(destination, source, pkt_id, data, min_mtu)
+    # (destination, source,...)
+    host_1.udt_send(3, 1, pkt_id, data, min_mtu)
+    host_2.udt_send(3, 2, pkt_id, data, min_mtu)
 
     # give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
