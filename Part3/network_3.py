@@ -32,12 +32,12 @@ class Interface:
 # from programming assignment 2).
 class NetworkPacket:
     # packet header encoding lengths
-    length_S_length = 5
+    length_S_length = 2
     pkt_id_S_length = 2
     flag_S_length = 2
-    offset_S_length = 5
-    dest_addr_S_length = 3
-    source_addr_S_length = 3
+    offset_S_length = 3
+    dest_addr_S_length = 2
+    source_addr_S_length = 2
 
     header_length = dest_addr_S_length \
                     + source_addr_S_length \
@@ -255,3 +255,10 @@ class Router:
             if self.stop:
                 print(threading.currentThread().getName() + ': Ending')
                 return
+
+            
+class RoutingTable:
+    def __init__(self, origin_host, destination_host, out_int):
+        self.origin = origin_host
+        self.dest = destination_host
+        self.interface = out_int

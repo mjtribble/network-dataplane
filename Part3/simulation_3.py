@@ -19,24 +19,28 @@ if __name__ == '__main__':
     object_L = []  # keeps track of objects, so we can kill their threads
 
     # create network nodes
-    # add hosts to list
-    # TODO: #3 Add more hosts and links ( host_1, Host2, host_3(server), RouterA, RouterB, RouterC, RouterD )
     host_1 = network_3.Host(1)
-    object_L.append(host_1)
     host_2 = network_3.Host(2)
-    object_L.append(host_2)
-
-    # adding another server
     host_3 = network_3.Host(3)
     host_4 = network_3.Host(4)
+
+    # add hosts to list
+    object_L.append(host_1)
+    object_L.append(host_2)
     object_L.append(host_3)
     object_L.append(host_4)
 
+    # create routing tables
+    table_a = ([1, 3, 1], [2, 3, 0])
+    table_b = ([1, 3, 0])
+    table_c = [[2, 3, 0]]
+    table_d = ([1, 3, 0], [2, 3, 0])
+
     # add routers to list
-    router_a = network_3.Router(name='A', intf_count=2, max_queue_size=router_queue_size)
-    router_b = network_3.Router(name='B', intf_count=1, max_queue_size=router_queue_size)
-    router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size)
-    router_d = network_3.Router(name='D', intf_count=2, max_queue_size=router_queue_size)
+    router_a = network_3.Router(name='A', intf_count=2, max_queue_size=router_queue_size, routing_table=table_a)
+    router_b = network_3.Router(name='B', intf_count=1, max_queue_size=router_queue_size, routing_table=table_b)
+    router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size, routing_table=table_c)
+    router_d = network_3.Router(name='D', intf_count=1, max_queue_size=router_queue_size)
     object_L.append(router_a)
     object_L.append(router_b)
     object_L.append(router_c)
@@ -51,26 +55,25 @@ if __name__ == '__main__':
     # specify the mtu at the end.
     # second and fourth element pertains to the interface, changing them to work with routing table
     # second = from interface, fourth = to interface
+
     # HOST 1 links
-    link_layer.add_link(link_3.Link(host_1, 0, router_a, 1, 50))
+    link_layer.add_link(link_3.Link(host_1, 0, router_a, 0, 50))
 
     # HOST 2 links
     link_layer.add_link(link_3.Link(host_2, 0, router_a, 1, 50))
 
     # ROUTER A links
-    link_layer.add_link(link_3.Link(router_a, 0, router_b, 2, 30))
-    link_layer.add_link(link_3.Link(router_a, 0, router_b, 3, 30))
-    link_layer.add_link(link_3.Link(router_a, 1, router_b, 2, 30))
-    link_layer.add_link(link_3.Link(router_a, 1, router_b, 3, 30))
+    link_layer.add_link(link_3.Link(router_a, 0, router_c, 0, 30))
+    link_layer.add_link(link_3.Link(router_a, 1, router_b, 0, 30))
 
     # ROUTER B links
-    link_layer.add_link(link_3.Link(router_b, 0, router_d, 1, 30))
+    link_layer.add_link(link_3.Link(router_b, 0, router_d, 0, 30))
 
     # ROUTER C links
-    link_layer.add_link(link_3.Link(router_c, 0, router_d, 1, 30))
+    link_layer.add_link(link_3.Link(router_c, 0, router_d, 0, 30))
 
     # ROUTER D links
-    link_layer.add_link(link_3.Link(router_d, 0, host_4, 1, 30))
+    link_layer.add_link(link_3.Link(router_d, 0, host_3, 0, 30))
 
     # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
     min_mtu = 30
