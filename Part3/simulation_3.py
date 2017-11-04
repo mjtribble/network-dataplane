@@ -96,19 +96,23 @@ if __name__ == '__main__':
     for t in thread_L:
         t.start()
 
-    data = ''
-
-    for i in range(43, 123):
-        data += chr(i)
-
-    print('Initial Data: ' + data)
-
-    # send message -> destination, source, data
-    # client(host 1) sending to server(host 3)
+    # data = ''
+    #
+    # for i in range(43, 123):
+    #     data += chr(i)
 
     pkt_id = 1  # this will increment with each packet from the same source
+
+    data = 'This is the packet that has been sent from host 1 through router B to host 3'
+    print('Initial Data Host 1: ' + data)
+
     # (destination, source,...)
     host_1.udt_send(3, 1, pkt_id, data, min_mtu)
+
+    data = 'Hi hello how are you this is the lovely host number 2 sending through router c to host 3'
+    print('Initial Data Host 1: ' + data)
+
+    # (destination, source,...)
     host_2.udt_send(3, 2, pkt_id, data, min_mtu)
 
     # give the network sufficient time to transfer all packets before quitting
