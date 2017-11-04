@@ -31,6 +31,7 @@ if __name__ == '__main__':
     object_L.append(host_4)
 
     # create routing tables
+    # [origin, destination, out_interface]
     table_a = ([1, 3, 1], [2, 3, 0])
     table_b = ([1, 3, 0])
     table_c = [[2, 3, 0]]

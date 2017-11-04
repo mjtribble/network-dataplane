@@ -145,7 +145,6 @@ class Host:
             data_S = data_S[data_frag_size:]  # remaining data to be sent
             temp_pkt_length = len(data_S)  # sets the new length
 
-            # buggy!!! may need tweeking when putting packets back together
             if temp_pkt_length <= data_frag_size:
                 offset += temp_pkt_length
             else:
@@ -207,7 +206,7 @@ class Router:
     # @param intf_count: the number of input and output interfaces // should be 3?
     # @param max_queue_size: max queue length (passed to Interface)
     # TODO: #3 add a routing table to each router
-    def __init__(self, name, intf_count, max_queue_size):
+    def __init__(self, name, intf_count, max_queue_size, routing_table):
         self.stop = False  # for thread termination
         self.name = name
         # create a list of interfaces
@@ -256,9 +255,3 @@ class Router:
                 print(threading.currentThread().getName() + ': Ending')
                 return
 
-            
-class RoutingTable:
-    def __init__(self, origin_host, destination_host, out_int):
-        self.origin = origin_host
-        self.dest = destination_host
-        self.interface = out_int
