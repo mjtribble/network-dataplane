@@ -169,48 +169,57 @@ class Host:
             # packet is from host 1
             if packet.source_addr is 1:
                 receiveList_1.append(pkt_S)
+                # checks the flag of pkt_S if 0 all data has been sent else, keep receiving
+                if packet.flag == 0:
+                    raw_result_1 = ''
+
+                    result1 = ''
+
+                    # sorts list based on the headers, last element goes to the from of the list due to flag = 0,
+                    # therefore we pop and append it to the end of the list to get it in order
+                    # may need to change this for part 3
+                    receiveList_1.sort()
+                    receiveList_1.append(receiveList_1.pop(0))
+
+                    for i in range(len(receiveList_1)):
+                        data = receiveList_1[i]
+                        packet = NetworkPacket.from_byte_S(data)
+                        result1 += packet.data_S
+                        raw_result_1 += data
+
+                    print('%s: received packets "%s"' % (self, raw_result_1))
+
+                    print('%s: parsed packet "%s"' % (self, result1))
+
+                    # thread target for the host to keep receiving data
 
             # packet is from host 2
             if packet.source_addr is 2:
                 receiveList_2.append(pkt_S)
 
-            # checks the flag of pkt_S if 0 all data has been sent else, keep receiving
-            if packet.flag == 0:
-                raw_result_1 = ''
-                raw_result_2 = ''
+                # checks the flag of pkt_S if 0 all data has been sent else, keep receiving
+                if packet.flag == 0:
+                    raw_result_2 = ''
 
-                result1 = ''
-                result2 = ''
+                    result2 = ''
 
-                # sorts list based on the headers, last element goes to the from of the list due to flag = 0,
-                # therefore we pop and append it to the end of the list to get it in order
-                # may need to change this for part 3
-                receiveList_1.sort()
-                receiveList_2.sort()
-                receiveList_1.append(receiveList_1.pop(0))
-                receiveList_2.append(receiveList_2.pop(0))
+                    # sorts list based on the headers, last element goes to the from of the list due to flag = 0,
+                    # therefore we pop and append it to the end of the list to get it in order
+                    # may need to change this for part 3
+                    receiveList_2.sort()
+                    receiveList_2.append(receiveList_2.pop(0))
 
-                for i in range(len(receiveList_1)):
-                    data = receiveList_1[i]
-                    packet = NetworkPacket.from_byte_S(data)
-                    result1 += packet.data_S
-                    raw_result_1 += data
+                    for j in range(len(receiveList_2)):
+                        data = receiveList_2[j]
+                        packet = NetworkPacket.from_byte_S(data)
+                        result2 += packet.data_S
+                        raw_result_2 += data
 
-                for j in range(len(receiveList_2)):
-                    data = receiveList_2[j]
-                    packet = NetworkPacket.from_byte_S(data)
-                    result2 += packet.data_S
-                    raw_result_2 += data
+                    print('%s: received packets "%s"' % (self, raw_result_2))
 
-                print('%s: received packets "%s"' % (self, raw_result_2))
+                    print('%s: parsed packet "%s"' % (self, result2))
 
-                print('%s: parsed packet "%s"' % (self, result2))
-
-                print('%s: received packets "%s"' % (self, raw_result_1))
-
-                print('%s: parsed packet "%s"' % (self, result1))
-
-    # thread target for the host to keep receiving data
+        # thread target for the host to keep receiving data
 
     def run(self):
         print(threading.currentThread().getName() + ': Starting')
