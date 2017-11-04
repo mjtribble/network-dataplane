@@ -19,24 +19,31 @@ if __name__ == '__main__':
     object_L = []  # keeps track of objects, so we can kill their threads
 
     # create network nodes
-    # add hosts to list
-    # TODO: #3 Add more hosts and links ( host_1, Host2, host_3(server), RouterA, RouterB, RouterC, RouterD )
     host_1 = network_3.Host(1)
-    object_L.append(host_1)
     host_2 = network_3.Host(2)
-    object_L.append(host_2)
-
-    # adding another server
     host_3 = network_3.Host(3)
     host_4 = network_3.Host(4)
+
+    # add hosts to list
+    object_L.append(host_1)
+    object_L.append(host_2)
     object_L.append(host_3)
     object_L.append(host_4)
 
+    # create routing tables
+    # [h1_dest, h1_out], [h2_dest, h2_out]
+    table_a = ([3, 1], [3, 0])
+    table_b = ([3, 0], [])
+    table_c = ([], [3, 0])
+    table_d = ([3, 0], [3, 0])
+
+    # create routers
+    router_a = network_3.Router(name='A', intf_count=2, max_queue_size=router_queue_size, routing_table=table_a)
+    router_b = network_3.Router(name='B', intf_count=1, max_queue_size=router_queue_size, routing_table=table_b)
+    router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size, routing_table=table_c)
+    router_d = network_3.Router(name='D', intf_count=1, max_queue_size=router_queue_size, routing_table=table_d)
+
     # add routers to list
-    router_a = network_3.Router(name='A', intf_count=2, max_queue_size=router_queue_size)
-    router_b = network_3.Router(name='B', intf_count=1, max_queue_size=router_queue_size)
-    router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size)
-    router_d = network_3.Router(name='D', intf_count=2, max_queue_size=router_queue_size)
     object_L.append(router_a)
     object_L.append(router_b)
     object_L.append(router_c)
@@ -49,16 +56,27 @@ if __name__ == '__main__':
 
     # add all the links to the LinkLayer
     # specify the mtu at the end.
-    #second and fourth element pertains to the interface, changing them to work with routing table
-    link_layer.add_link(link_3.Link(host_1, 0, router_a, 0, 50))     #from client 1 and two on interface 0, forward to router a
-    link_layer.add_link(link_3.Link(router_a, 0, router_b, 0, 30))
-    link_layer.add_link(link_3.Link(router_b, 0, router_d, 0, 30))
-    link_layer.add_link(link_3.Link(router_d, 0, host_3, 0, 30))
+    # second and fourth element pertains to the interface, changing them to work with routing table
+    # second = from interface, fourth = to interface
 
+    # HOST 1 links
+    link_layer.add_link(link_3.Link(host_1, 0, router_a, 0, 50))
+
+    # HOST 2 links
     link_layer.add_link(link_3.Link(host_2, 0, router_a, 1, 50))
-    link_layer.add_link(link_3.Link(router_a, 1, router_c, 0, 30))
-    link_layer.add_link(link_3.Link(router_c, 0, router_d, 1, 30))
-    link_layer.add_link(link_3.Link(router_d, 1, host_4, 0, 30))
+
+    # ROUTER A links
+    link_layer.add_link(link_3.Link(router_a, 0, router_c, 0, 30))
+    link_layer.add_link(link_3.Link(router_a, 1, router_b, 0, 30))
+
+    # ROUTER B links
+    link_layer.add_link(link_3.Link(router_b, 0, router_d, 0, 30))
+
+    # ROUTER C links
+    link_layer.add_link(link_3.Link(router_c, 0, router_d, 0, 30))
+
+    # ROUTER D links
+    link_layer.add_link(link_3.Link(router_d, 0, host_3, 0, 30))
 
     # this is the minimum of the link layer's mtu's and sent in to the udt for fragment sizing.
     min_mtu = 30
@@ -86,11 +104,12 @@ if __name__ == '__main__':
     print('Initial Data: ' + data)
 
     # send message -> destination, source, data
-    # client(host 1) sending to server(host 2)
-    source = 2
-    destination = 4
+    # client(host 1) sending to server(host 3)
+
     pkt_id = 1  # this will increment with each packet from the same source
-    host_1.udt_send(destination, source, pkt_id, data, min_mtu)
+    # (destination, source,...)
+    host_1.udt_send(3, 1, pkt_id, data, min_mtu)
+    host_2.udt_send(3, 2, pkt_id, data, min_mtu)
 
     # give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
