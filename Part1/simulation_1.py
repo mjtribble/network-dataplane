@@ -29,12 +29,12 @@ if __name__ == '__main__':
     router_a = network_1.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
     object_L.append(router_a)
 
-    # create a Link Layer to keep track of link1s between network_1 nodes
+    # create a Link Layer to keep track of link_1s between network_1 nodes
     # add LinkLayer to list
     link_layer = link_1.LinkLayer()
     object_L.append(link_layer)
 
-    # add all the link1s to the LinkLayer
+    # add all the link_1s to the LinkLayer
     link_layer.add_link(link_1.Link(client, 0, router_a, 0, 50))
 
     # changed this from 50 to 30 via video.
