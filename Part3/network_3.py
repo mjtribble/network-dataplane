@@ -166,7 +166,7 @@ class Host:
         if pkt_S is not None:
             packet = NetworkPacket.from_byte_S(pkt_S)
 
-            # packet is from host 1
+            # Packet is from Host 1
             if packet.source_addr is 1:
                 receiveList_1.append(pkt_S)
                 # checks the flag of pkt_S if 0 all data has been sent else, keep receiving
@@ -193,7 +193,7 @@ class Host:
 
                     # thread target for the host to keep receiving data
 
-            # packet is from host 2
+            # Packet is from Host 2
             if packet.source_addr is 2:
                 receiveList_2.append(pkt_S)
 
