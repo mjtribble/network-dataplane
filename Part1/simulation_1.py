@@ -57,7 +57,6 @@ if __name__ == '__main__':
     for i in range(43, 123):
         testString += chr(i)
 
-
     if len(testString) >= 80:
         first = testString[0:40]
         second = testString[40:80]
