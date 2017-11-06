@@ -4,8 +4,8 @@ Created on Oct 12, 2016
 @author: mwitt_000
 """
 
-import network1
-import link1
+import network_1
+import link_1
 import threading
 from time import sleep
 
@@ -13,32 +13,32 @@ from time import sleep
 router_queue_size = 0  # 0 means unlimited
 
 # may need to increase...
-simulation_time = 5 # give the network1 sufficient time to transfer all packets before quitting
+simulation_time = 5 # give the network_1 sufficient time to transfer all packets before quitting
 
 if __name__ == '__main__':
     object_L = []  # keeps track of objects, so we can kill their threads
 
-    # create network1 nodes
+    # create network_1 nodes
     # add hosts to list
-    client = network1.Host(1)
+    client = network_1.Host(1)
     object_L.append(client)
-    server = network1.Host(2)
+    server = network_1.Host(2)
     object_L.append(server)
 
     # add routers to list
-    router_a = network1.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
+    router_a = network_1.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
     object_L.append(router_a)
 
-    # create a Link Layer to keep track of link1s between network1 nodes
+    # create a Link Layer to keep track of link_1s between network_1 nodes
     # add LinkLayer to list
-    link_layer = link1.LinkLayer()
+    link_layer = link_1.LinkLayer()
     object_L.append(link_layer)
 
-    # add all the link1s to the LinkLayer
-    link_layer.add_link(link1.Link(client, 0, router_a, 0, 50))
+    # add all the link_1s to the LinkLayer
+    link_layer.add_link(link_1.Link(client, 0, router_a, 0, 50))
 
     # changed this from 50 to 30 via video.
-    link_layer.add_link(link1.Link(router_a, 0, server, 0, 50))
+    link_layer.add_link(link_1.Link(router_a, 0, server, 0, 50))
 
     # start all the objects
     thread_L = [threading.Thread(name=client.__str__(), target=client.run),
@@ -54,8 +54,9 @@ if __name__ == '__main__':
     first = ''
     second = ''
 
-    for i in range(80):
-        testString += '~'
+    for i in range(43, 123):
+        testString += chr(i)
+
 
     if len(testString) >= 80:
         first = testString[0:40]
@@ -68,7 +69,7 @@ if __name__ == '__main__':
     # for i in range(3):
     #     client.udt_send(2, 'Hello %d' % i)  # client(host 1) sending to server(host 2)
 
-    # # give the network1 sufficient time to transfer all packets before quitting
+    # # give the network_1 sufficient time to transfer all packets before quitting
     sleep(simulation_time)
 
     # join all threads
