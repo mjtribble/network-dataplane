@@ -191,8 +191,6 @@ class Host:
 
                     print('%s: parsed packet "%s"' % (self, result1))
 
-                    # thread target for the host to keep receiving data
-
             # Packet is from Host 2
             if packet.source_addr is 2:
                 receiveList_2.append(pkt_S)
@@ -219,7 +217,6 @@ class Host:
 
                     print('%s: parsed packet "%s"' % (self, result2))
 
-        # thread target for the host to keep receiving data
 
     def run(self):
         print(threading.currentThread().getName() + ': Starting')
