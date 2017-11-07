@@ -142,7 +142,7 @@ class Host:
                                    data_S[:data_frag_size])
             self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
             print('%s: sending packet "%s" with id %d, and offset %d, out interface with mtu=%d'
-                  % (self, packet, pkt_id, offset, min_mtu))
+                  % (self, packet, pkt_id, offset, self.out_intf_L[0].mtu))
             data_S = data_S[data_frag_size:]  # remaining data to be sent
             temp_pkt_length = len(data_S)  # sets the new length
 
@@ -157,7 +157,7 @@ class Host:
             packet = NetworkPacket(packet_size, pkt_id, flag, offset, dest_addr, source_addr, data_S)
             self.out_intf_L[0].put(packet.to_byte_S())  # send packets always enqueued successfully
             print('%s: sending packet "%s" with id %d, and offset %d, out interface with mtu=%d'
-                  % (self, packet, pkt_id, offset, min_mtu))
+                  % (self, packet, pkt_id, offset, self.out_intf_L[0].mtu))
 
     # receive packet from the network layer
     def udt_receive(self):
@@ -277,7 +277,7 @@ class Router:
                     # elif p.dest_addr==2 and p.source_addr==4:
 
                     self.out_intf_L[forward_int].put(p.to_byte_S(), True)
-                    print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, forward_int))
+                    print('%s: forwarding packet "%s" from interface %d to %d with mtu %d'% (self, p, i, forward_int, self.out_intf_L[i].mtu))
             except queue.Full:
                 print('%s: packet "%s" lost on interface %d to %d with mtu %d'
                       % (self, p, i, forward_int, self.out_intf_L[i].mtu))
