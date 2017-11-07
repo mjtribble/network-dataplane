@@ -59,6 +59,7 @@ if __name__ == '__main__':
     for i in range(43, 123):
         data += chr(i)
 
+    print('Initial Data Host 1: ' + data)
     # send message -> destination, source, data
     # client(host 1) sending to server(host 2)
     source = 1
